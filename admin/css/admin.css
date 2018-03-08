@@ -1,0 +1,7 @@
+/**
+* ADDING OUR ADMIN STYLES
+*/
+#customize-control-idivi_post_settings_last_used_options,
+#customize-control-idivi_page_settings_last_used_options, #customize-control-idivi_project_settings_last_used_options  {
+margin-top: 10% !important;
+}
