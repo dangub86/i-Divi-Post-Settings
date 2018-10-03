@@ -21,7 +21,7 @@ class idivi_post_settings {
 	public function __construct() {
 
 		$this->plugin_name = 'i-divi_post_settings';
-		$this->version = '1.1';
+		$this->version = '1.2';
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();

@@ -4,7 +4,7 @@
  * Plugin URI:  http://www.howidivit.com/divi_post_settings
  * Description: The plugin add some fields in Divi Theme Customizer from which you can set your favorite default post, page and project settings.
  * Author:      Dan Mardis - Howidivit.com
- * Version:     1.1
+ * Version:     1.2
  * Author URI:  http://www.howidivit.com
  */
 
@@ -64,14 +64,17 @@ add_action( 'admin_init', 'idivi_add_custom_metabox' );
    $post_layout_opt = get_option( 'idivi_post_settings_sidebar' );
    $page_layout_opt = get_option( 'idivi_page_settings_sidebar' );
    $project_layout_opt = get_option( 'idivi_project_settings_sidebar' );
+   $product_layout_opt = get_option( 'idivi_product_settings_sidebar' );
 
    $dot_nav_opt = get_option( 'idivi_post_settings_dot' );
    $dot_page_nav_opt = get_option( 'idivi_page_settings_dot' );
    $dot_project_nav_opt = get_option( 'idivi_project_settings_dot' );
+   $dot_product_nav_opt = get_option( 'idivi_product_settings_dot' );
 
    $before_scroll_opt = get_option( 'idivi_post_settings_before_scroll' );
    $before_page_scroll_opt = get_option( 'idivi_page_settings_before_scroll' );
    $before_project_scroll_opt = get_option( 'idivi_project_settings_before_scroll' );
+   $before_product_scroll_opt = get_option( 'idivi_product_settings_before_scroll' );
 
    $title_opt = get_option( 'idivi_post_settings_post_title' );
    $project_navigation = get_option( 'idivi_project_settings_nav' );
@@ -79,12 +82,14 @@ add_action( 'admin_init', 'idivi_add_custom_metabox' );
    $last_used = get_option('idivi_post_settings_last_used');
    $last_page_used = get_option('idivi_page_settings_last_used');
    $last_project_used = get_option('idivi_project_settings_last_used');
+   $last_product_used = get_option('idivi_product_settings_last_used');
 
    // call admin class function for getting last post id
    $last_post_used = new idivi_post_settings_Admin($plugin_name, $version);
    $last_post_id = $last_post_used->get_last_post_id();
    $last_page_id = $last_post_used->get_last_page_id();
    $last_project_id = $last_post_used->get_last_project_id();
+   $last_product_id = $last_post_used->get_last_product_id();
 
    // retrieve last post values
    $last_post_layout = get_post_meta( $last_post_id, '_et_pb_page_layout', true );
@@ -102,6 +107,10 @@ add_action( 'admin_init', 'idivi_add_custom_metabox' );
 
    $last_project_nav = get_post_meta( $last_project_id, '_et_pb_project_nav', true );
 
+   $last_product_layout = get_post_meta( $last_product_id, '_et_pb_page_layout', true );
+   $last_product_side_nav = get_post_meta( $last_product_id, '_et_pb_side_nav', true );
+   $last_product_hide_nav = get_post_meta( $last_product_id, '_et_pb_post_hide_nav', true );
+
    wp_nonce_field( basename( __FILE__ ), 'et_settings_nonce' );
 
    $page_layout = get_post_meta( $post_id, '_et_pb_page_layout', true );
@@ -110,6 +119,8 @@ add_action( 'admin_init', 'idivi_add_custom_metabox' );
    $post_hide_nav = get_post_meta( $post_id, '_et_pb_post_hide_nav', true );
    $post_hide_nav = $post_hide_nav && 'off' === $post_hide_nav ? 'default' : $post_hide_nav;
    $show_title = get_post_meta( $post_id, '_et_pb_show_title', true );
+
+   $is_builder_active = 'on' === get_post_meta( $post_id, '_et_pb_use_builder', true );
 
 if ( 'post' === $post->post_type ) {
    if (
@@ -121,12 +132,14 @@ if ( 'post' === $post->post_type ) {
      $page_layouts = array(
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     } else {
      $page_layouts = array(
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     }
@@ -138,31 +151,54 @@ if ( 'post' === $post->post_type ) {
      $page_layouts = array(
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     } else {
      $page_layouts = array(
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     }
-   } else {
+   } else if (
+    ( $post_layout_opt === 'Full' && (!isset($last_used) || empty($last_used)) ) ||
+    ( ( isset($last_used) && ($last_used == 1) ) && $last_post_layout === 'et_full_width_page')
+    ) {
+     if ( is_rtl() ) {
+      $page_layouts = array(
+       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     } else {
+      $page_layouts = array(
+       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     }
+    } else {
     if ( is_rtl() ) {
      $page_layouts = array(
-      'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+      'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     } else {
      $page_layouts = array(
-      'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+      'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+      'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
       );
     }
    }
- } else if ( 'page' === $post->post_type ) {
+ } else if ( 'page' === $post->post_type ) { 
     if (
         ( !$page_layout_opt && (!isset($last_page_used) || empty($last_page_used) ) ) ||
         ( $page_layout_opt === 'Right' && (!isset($last_page_used) || empty($last_page_used)) ) ||
@@ -172,13 +208,13 @@ if ( 'post' === $post->post_type ) {
       $page_layouts = array(
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        );
      } else {
       $page_layouts = array(
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        );
      }
     } else if (
@@ -189,25 +225,25 @@ if ( 'post' === $post->post_type ) {
       $page_layouts = array(
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        );
      } else {
       $page_layouts = array(
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        );
      }
     } else {
      if ( is_rtl() ) {
       $page_layouts = array(
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
        );
      } else {
       $page_layouts = array(
-       'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
        'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
        'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
        );
@@ -223,13 +259,13 @@ if ( 'post' === $post->post_type ) {
        $page_layouts = array(
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         );
       } else {
        $page_layouts = array(
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         );
       }
      } else if (
@@ -240,31 +276,92 @@ if ( 'post' === $post->post_type ) {
        $page_layouts = array(
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         );
       } else {
        $page_layouts = array(
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         );
       }
      } else {
       if ( is_rtl() ) {
        $page_layouts = array(
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
         );
       } else {
        $page_layouts = array(
-        'et_full_width_page' => esc_html__( 'Fullwidth', 'Divi' ),
+        'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
         'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
         'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
         );
       }
      }
-   }
+   } else if ( 'product' === $post->post_type ) {
+    if (
+        ( !$product_layout_opt && (!isset($last_product_used) || empty($last_product_used) ) ) ||
+        ( $product_layout_opt === 'Right' && (!isset($last_product_used) || empty($last_product_used)) ) ||
+      ( ( isset($last_product_used) && ($last_product_used == 1) ) && $last_product_layout === 'et_right_sidebar')
+    ) {
+     if ( is_rtl() ) {
+      $page_layouts = array(
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     } else {
+      $page_layouts = array(
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     }
+    } else if (
+    ( $product_layout_opt === 'Left' && (!isset($last_product_used) || empty($last_product_used)) ) ||
+    ( ( isset($last_product_used) && ($last_product_used == 1) ) && $last_product_layout === 'et_left_sidebar')
+    ) {
+     if ( is_rtl() ) {
+      $page_layouts = array(
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     } else {
+      $page_layouts = array(
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       );
+     }
+    } else {
+     if ( is_rtl() ) {
+      $page_layouts = array(
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       );
+     } else {
+      $page_layouts = array(
+       'et_no_sidebar' => esc_html__( 'No Sidebar', 'Divi' ),
+       'et_right_sidebar' => esc_html__( 'Right Sidebar', 'Divi' ),
+       'et_left_sidebar' => esc_html__( 'Left Sidebar', 'Divi' ),
+       );
+     }
+    }
+  }
+
+  	// Fullwidth option available for default post types only. Not available for custom post types.
+	if ( ! et_builder_is_post_type_custom( $post->post_type ) ) {
+		$page_layouts['et_full_width_page'] = esc_html__( 'Fullwidth', 'Divi' );
+	} 
+
+	if ( 'et_full_width_page' === $page_layout && ( ! isset( $page_layouts['et_full_width_page'] ) || ! $is_builder_active ) ) {
+		$page_layout = 'et_no_sidebar';
+  }
+  
    $layouts = array(
     'light' => esc_html__( 'Light', 'Divi' ),
     'dark' => esc_html__( 'Dark', 'Divi' ),
@@ -285,10 +382,11 @@ if ( 'post' === $post->post_type ) {
     <select id="et_pb_page_layout" name="et_pb_page_layout">
     <?php
     foreach ( $page_layouts as $layout_value => $layout_name ) {
-    printf( '<option value="%2$s"%3$s>%1$s</option>',
+    printf( '<option value="%2$s"%3$s%4$s>%1$s</option>',
     esc_html( $layout_name ),
     esc_attr( $layout_value ),
-    selected( $layout_value, $page_layout, false )
+    selected( $layout_value, $page_layout, false ),
+    'et_full_width_page' === $layout_value && ! $is_builder_active ? ' style="display: none;"' : ''
      );
     } ?>
     </select>
@@ -345,7 +443,23 @@ if ( 'post' === $post->post_type ) { ?>
  <option value="off" <?php selected( 'off', $side_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
  </select>
 <?php }
- } ?>
+ } else if ( 'product' === $post->post_type ) {
+  if (
+ ( !$dot_product_nav_opt && (!isset($last_product_used) || empty($last_product_used) ) ) ||
+ ( $dot_product_nav_opt === 'Off' && (!isset($last_product_used) || empty($last_product_used) ) ) ||
+ (( isset($last_product_used) && ($last_product_used == 1) ) && $last_product_side_nav === 'off')
+) { ?>
+<select id="et_pb_side_nav" name="et_pb_side_nav">
+<option value="off" <?php selected( 'off', $side_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
+<option value="on" <?php selected( 'on', $side_nav ); ?>><?php esc_html_e( 'On', 'Divi' ); ?></option>
+</select>
+<?php } else { ?>
+<select id="et_pb_side_nav" name="et_pb_side_nav">
+<option value="on" <?php selected( 'on', $side_nav ); ?>><?php esc_html_e( 'On', 'Divi' ); ?></option>
+<option value="off" <?php selected( 'off', $side_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
+</select>
+<?php }
+} ?>
 
     </p>
     <p class="et_pb_page_settings">
@@ -433,7 +547,35 @@ if ( 'post' === $post->post_type ) {
        </select>
 <?php
    }
- }
+ } else if ( 'product' === $post->post_type ) {
+  if (
+     ( !$before_product_scroll_opt && (!isset($last_product_used) || empty($last_product_used) ) ) ||
+     ( $before_product_scroll_opt === 'Default' && (!isset($last_product_used) || empty($last_product_used) ) ) ||
+     (( isset($last_product_used) && ($last_product_used == 1) ) && $last_product_hide_nav === 'default')
+  ) { ?>
+   <select id="et_pb_post_hide_nav" name="et_pb_post_hide_nav">
+   <option value="default" <?php selected( 'default', $post_hide_nav ); ?>><?php esc_html_e( 'Default', 'Divi' ); ?></option>
+   <option value="no" <?php selected( 'no', $post_hide_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
+   <option value="on" <?php selected( 'on', $post_hide_nav ); ?>><?php esc_html_e( 'On', 'Divi' ); ?></option>
+   </select>
+   <?php } else if (
+     ( $before_product_scroll_opt === 'Off' && (!isset($last_product_used) || empty($last_product_used)) ) ||
+     ( ( isset($last_product_used) && ($last_product_used == 1) ) && $last_product_hide_nav === 'no')
+   ) { ?>
+    <select id="et_pb_post_hide_nav" name="et_pb_post_hide_nav">
+    <option value="no" <?php selected( 'no', $post_hide_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
+    <option value="default" <?php selected( 'default', $post_hide_nav ); ?>><?php esc_html_e( 'Default', 'Divi' ); ?></option>
+    <option value="on" <?php selected( 'on', $post_hide_nav ); ?>><?php esc_html_e( 'On', 'Divi' ); ?></option>
+    </select>
+   <?php } else { ?>
+    <select id="et_pb_post_hide_nav" name="et_pb_post_hide_nav">
+    <option value="on" <?php selected( 'on', $post_hide_nav ); ?>><?php esc_html_e( 'On', 'Divi' ); ?></option>
+    <option value="default" <?php selected( 'default', $post_hide_nav ); ?>><?php esc_html_e( 'Default', 'Divi' ); ?></option>
+    <option value="no" <?php selected( 'no', $post_hide_nav ); ?>><?php esc_html_e( 'Off', 'Divi' ); ?></option>
+    </select>
+<?php
+}
+}
       ?>
     </p>
 

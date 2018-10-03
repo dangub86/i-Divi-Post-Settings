@@ -4,7 +4,7 @@ Donate link: http://howidivit.com/divi-post-settings/
 Tags: Divi, Admin, Utility, Posts, Settings, Blog, Bloggers, Backend, Layouts, Design, Divi Post Settings, Meta-box, Theme Customizer, Post Layout
 Requires at least: 4.0
 Tested up to: 4.9
-Stable tag: 1.1
+Stable tag: 1.2
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -19,8 +19,10 @@ Once saved, every time you will create a new post, page or project you'll have t
 Further, a useful option will let you to set as default Divi Post Settings those ones used in your last post published.
 
 More info on www.howidivit.com/divi-post-settings/
+
 or see the video below
-https://youtu.be/7PmRNIgBFlY
+
+[youtube https://youtu.be/7PmRNIgBFlY]
 
 == Installation ==
 
@@ -35,6 +37,12 @@ To install the plugin you can use the classic method from Wordpress Repository d
 = Why this plugin should be useful? =
 The plugin accomplish a very simple task, giving you the possibility to set default post settings (those ones that you find in the Divi Post Settings meta box inside every post). This plugin, so, will simply let you to save time without have to set the values everytime you create a new post, page or project!
 
+= Does the plugin add different settings for each post-type? =
+Yes, it does. Once activated, the plugin adds settings for each post-type: Posts, Pages, Products (working only if WooCommerce is active) and Projects. You will find new settings in the Customizer under the Blog panel.
+
+= Once Customizer settings have been set up, can i change Divi Settings manually from inside the post? =
+Yes, of course. You can always change manually the Divi Settings from inside posts/pages/products/projects; however when hit 'Add New' button the settings you chose in the Customizer will be applied as the default ones. You can also choose to remember the last settings you used in a post/page/product/project for the next ones you will create by flagging the relative checkbox in the Customizer.
+
 == Screenshots ==
 
 1. Theme Customizer under Blog panel
@@ -43,6 +51,12 @@ The plugin accomplish a very simple task, giving you the possibility to set defa
 1. Divi Project Settings in Theme Customizer
 
 == Changelog ==
+
+= 1.2 =
+
+* Added support for WooCommerce products.
+* Updated Fullwidth mode only for default post types (Posts).
+* Added Customizer settings for WooCoommerce products.
 
 = 1.1 =
 
@@ -66,6 +80,10 @@ The plugin accomplish a very simple task, giving you the possibility to set defa
 * Added option for remembering the last used options.
 
 == Upgrade Notice ==
+
+= 1.2 =
+
+* Added Divi Settings for WooCommerce products.
 
 = 1.1 =
 

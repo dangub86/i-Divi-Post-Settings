@@ -99,7 +99,8 @@ class idivi_post_settings_Admin {
     'type' => 'select',
     'choices'    => array(
               'Right' => 'Right Sidebar',
-              'Left' => 'Left Sidebar',
+			  'Left' => 'Left Sidebar',
+			  'No' => 'No Sidebar',
               'Full' => 'Fullwidth',
           ),
     'priority' => 5,
@@ -172,7 +173,7 @@ class idivi_post_settings_Admin {
 	  'choices'    => array(
 	 					 'Right' => 'Right Sidebar',
 	 					 'Left' => 'Left Sidebar',
-	 					 'Full' => 'Fullwidth',
+	 					 'No' => 'No Sidebar',
 	 			 ),
 	  'priority' => 5,
 	  'settings' => 'idivi_page_settings_sidebar'
@@ -212,6 +213,63 @@ class idivi_post_settings_Admin {
 	 ));
 
 
+// DIVI PRODUCT SETTINGS
+$wp_customize->add_section('idivi_product_settings_section', array(
+	'title' => __('Divi Product Settings', $this->plugin_name),
+	'panel' => 'et_divi_blog_settings',
+	 ));
+	$wp_customize->add_setting('idivi_product_settings_sidebar', array(
+	 'default' => 'Right',
+	 'type' => 'option',
+	 'capability' => 'edit_theme_options',
+	));
+	$wp_customize->add_control('idivi_product_settings_layout', array(
+	 'label' => __('Page Layout', $this->plugin_name),
+	 'section' => 'idivi_product_settings_section',
+	 'type' => 'select',
+	 'choices'    => array(
+						 'Right' => 'Right Sidebar',
+						 'Left' => 'Left Sidebar',
+						 'No' => 'No Sidebar',
+				 ),
+	 'priority' => 5,
+	 'settings' => 'idivi_product_settings_sidebar'
+	));
+	$wp_customize->add_setting('idivi_product_settings_dot', array(
+	 'default' => 'Off',
+	 'type' => 'option',
+	 'capability' => 'edit_theme_options',
+	));
+	$wp_customize->add_control('idivi_product_settings_dot_nav', array(
+	 'label' => __('Dot Navigation', $this->plugin_name),
+	 'section' => 'idivi_product_settings_section',
+	 'type' => 'select',
+	 'choices'    => array(
+						 'Off' => 'Off',
+						 'On' => 'On',
+				 ),
+	 'priority' => 5,
+	 'settings' => 'idivi_product_settings_dot'
+	));
+	$wp_customize->add_setting('idivi_product_settings_before_scroll', array(
+	 'default' => 'Default',
+	 'type' => 'option',
+	 'capability' => 'edit_theme_options',
+	));
+	$wp_customize->add_control('idivi_product_settings_hide_before_scroll', array(
+	 'label' => __('Hide Nav Before Scroll', $this->plugin_name),
+	 'section' => 'idivi_product_settings_section',
+	 'type' => 'select',
+	 'choices'    => array(
+						 'Default' => 'Default',
+						 'Off' => 'Off',
+						 'On'  => 'On',
+				 ),
+	 'priority' => 5,
+	 'settings' => 'idivi_product_settings_before_scroll'
+	));
+
+
 // DIVI PROJECT SETTINGS
 	 $wp_customize->add_section('idivi_project_settings_section', array(
 	 'title' => __('Divi Project Settings', $this->plugin_name),
@@ -229,7 +287,7 @@ class idivi_post_settings_Admin {
 	  'choices'    => array(
 	 					 'Right' => 'Right Sidebar',
 	 					 'Left' => 'Left Sidebar',
-	 					 'Full' => 'Fullwidth',
+	 					 'No' => 'No Sidebar',
 	 			 ),
 	  'priority' => 5,
 	  'settings' => 'idivi_project_settings_sidebar'
@@ -310,7 +368,20 @@ class idivi_post_settings_Admin {
  		'type' => 'checkbox',
  		'priority' => 10,
  		'settings' => 'idivi_page_settings_last_used'
- 	 ));
+	  ));
+	  
+	  $wp_customize->add_setting('idivi_product_settings_last_used', array(
+		'default' => false,
+		'type' => 'option',
+		'capability' => 'edit_theme_options',
+	 ));
+	 $wp_customize->add_control('idivi_product_settings_last_used_options', array(
+		'label' => __('Remember Last Used Options', $this->plugin_name),
+		'section' => 'idivi_product_settings_section',
+		'type' => 'checkbox',
+		'priority' => 10,
+		'settings' => 'idivi_product_settings_last_used'
+	 ));
 
 	 $wp_customize->add_setting('idivi_project_settings_last_used', array(
  		'default' => false,
@@ -326,7 +397,9 @@ class idivi_post_settings_Admin {
  	 ));
   }
 
-	// create function that retrieves last post id
+	/*
+   * Create function that retrieves last post id
+   */
 	public function get_last_post_id() {
    $latest_post_args = array(
     'numberposts' => 1,
@@ -341,34 +414,10 @@ class idivi_post_settings_Admin {
    }
   }
 
-	// public function get_last_page_id() {
-  //  $latest_post_args = array(
-  //   'numberposts' => 1,
-  //   'orderby' => 'post_date',
-	// 	'post_type' => 'page',
-  //   'order' => 'DESC'
-  //  );
-  //  $latest_post = wp_get_recent_posts( $latest_post_args );
-  //  foreach ($latest_post as $post) {
-  //   $latest_post_id = $latest_post[0]["ID"];
-	// 	return $latest_post_id;
-  //  }
-  // }
-	//
-	// public function get_last_project_id() {
-  //  $latest_post_args = array(
-  //   'numberposts' => 1,
-  //   'orderby' => 'post_date',
-	// 	'post_type' => 'project',
-  //   'order' => 'DESC'
-  //  );
-  //  $latest_post = wp_get_recent_posts( $latest_post_args );
-  //  foreach ($latest_post as $post) {
-  //   $latest_post_id = $latest_post[0]["ID"];
-	// 	return $latest_post_id;
-  //  }
-  // }
-
+	/**
+	 * Create function that retrieves last page id
+	 * @since 1.1
+	 */
 	public function get_last_page_id() {
    $latest_page_args = array(
     'numberposts' => 1,
@@ -383,6 +432,10 @@ class idivi_post_settings_Admin {
    }
   }
 
+	/**
+	 * Create function that retrieves last project id
+	 * @since 1.1
+	 */
 	public function get_last_project_id() {
    $latest_project_args = array(
     'numberposts' => 1,
@@ -396,6 +449,24 @@ class idivi_post_settings_Admin {
 		return $latest_project_id;
    }
   }
+
+  	/**
+	 * Create function that retrieves last product id
+	 * @since 1.1
+	 */
+	public function get_last_product_id() {
+		$latest_product_args = array(
+		 'numberposts' => 1,
+		 'orderby' => 'post_date',
+			 'post_type' => 'product',
+		 'order' => 'DESC'
+		);
+		$latest_product = wp_get_recent_posts( $latest_product_args );
+		foreach ($latest_product as $product) {
+		 $latest_product_id = $latest_product[0]["ID"];
+			 return $latest_product_id;
+		}
+	   }
 
 
 }
