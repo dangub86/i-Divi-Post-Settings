@@ -21,7 +21,7 @@ class idivi_post_settings {
 	public function __construct() {
 
 		$this->plugin_name = 'i-divi_post_settings';
-		$this->version = '1.2';
+		$this->version = '1.3';
 
 		$this->load_dependencies();
 		$this->define_admin_hooks();
@@ -49,7 +49,6 @@ class idivi_post_settings {
 		 */
 		require_once plugin_dir_path( dirname( __FILE__ ) ) . 'admin/class-divi-post-settings-admin.php';
 
-
 		$this->loader = new idivi_post_settings_Loader();
 
 	}
@@ -61,17 +60,27 @@ class idivi_post_settings {
 	private function define_admin_hooks() {
 
 		$plugin_admin = new idivi_post_settings_Admin( $this->get_plugin_name(), $this->get_version() );
+		$post_id = get_the_ID();
 
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_scripts' );
 		$this->loader->add_action( 'admin_enqueue_scripts', $plugin_admin, 'enqueue_styles' );
 
-    $this->loader->add_action( 'admin_notices', $plugin_admin, 'inform_user' );
+		$this->loader->add_action( 'upgrader_process_complete', $plugin_admin, 'upgrade_completed', 10, 2 );
+        $this->loader->add_action( 'admin_notices', $plugin_admin, 'inform_user' );
+        $this->loader->add_action( 'admin_notices', $plugin_admin, 'display_update_notice' );
+		$this->loader->add_action( 'wp_ajax_idivi_dismiss', $plugin_admin, 'process_ajax' );
+		$this->loader->add_action( 'wp_ajax_idivi_dismiss_metabox', $plugin_admin, 'process_ajax_metabox' );
 
-    $this->loader->add_action( 'wp_ajax_idivi_dismiss', $plugin_admin, 'process_ajax' );
-
-    $this->loader->add_action( 'customize_register', $plugin_admin, 'post_settings_options' );
+		$this->loader->add_action( 'customize_register', $plugin_admin, 'post_settings_options' );
 
 		$this->loader->add_action( 'admin_init', $plugin_admin, 'remove_metabox' );
+		$this->loader->add_action( 'admin_init', $plugin_admin, 'idivi_add_custom_metabox' );
+		
+		$this->loader->add_action( 'the_post', $plugin_admin, 'set_initial_theme_mods_values');		
+
+		$this->loader->add_filter( 'et_builder_page_settings_modal_toggles', $plugin_admin, 'idivi_add_page_toggles' );
+		$this->loader->add_filter( 'et_builder_page_settings_definitions', $plugin_admin, 'idivi_add_page_settings' );
+		$this->loader->add_filter( 'et_builder_page_settings_values', $plugin_admin, 'idivi_save_page_settings', $post_id );
 
 	}
 

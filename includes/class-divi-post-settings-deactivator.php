@@ -7,8 +7,9 @@ class idivi_post_settings_Deactivator {
 	 */
 	public static function deactivate() {
     $user_id = get_current_user_id();
-    update_user_option( $user_id, "idivi-dismiss", '' );
-	}
+	update_user_option( $user_id, "idivi-dismiss", '' );
+		
+}
 
 }
 

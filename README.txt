@@ -1,10 +1,10 @@
 === i-Divi Post Settings ===
 Contributors: dangub86
 Donate link: http://howidivit.com/divi-post-settings/
-Tags: Divi, Admin, Utility, Posts, Settings, Blog, Bloggers, Backend, Layouts, Design, Divi Post Settings, Meta-box, Theme Customizer, Post Layout
+Tags: Divi, Admin, Utility, Posts, Settings, Blog, Bloggers, Backend, Layouts, Design, Divi Post Settings, Meta-box, Theme Customizer, Post Layout, Visual Builder
 Requires at least: 4.0
-Tested up to: 4.9
-Stable tag: 1.2
+Tested up to: 5.0
+Stable tag: 1.3
 License: GPLv2 or later
 License URI: http://www.gnu.org/licenses/gpl-2.0.html
 
@@ -12,11 +12,9 @@ The plugin add some fields in Divi Theme Customizer for setting your favorite de
 
 == Description ==
 
-Once you activate the plugin you will see three new sections called 'Divi Post Settings', 'Divi Page Settings' and 'Divi Project Settings' under the Blog panel in the Divi Theme Customizer. From here you can set your default values for Divi Settings.
+Once you activate the plugin you will see four new sections called 'Divi Post Settings', 'Divi Page Settings', 'Divi Project Settings' and 'Divi Product Settings' under the Blog panel in the Divi Theme Customizer. From here you can set your default values for Divi Settings.
 
 Once saved, every time you will create a new post, page or project you'll have these Divi Settings already set. No more frequent changes required every time you write a new post!
-
-Further, a useful option will let you to set as default Divi Post Settings those ones used in your last post published.
 
 More info on www.howidivit.com/divi-post-settings/
 
@@ -46,11 +44,25 @@ Yes, of course. You can always change manually the Divi Settings from inside pos
 == Screenshots ==
 
 1. Theme Customizer under Blog panel
-1. Divi Post Settings in Theme Customizer
-1. Divi Page Settings in Theme Customizer
-1. Divi Project Settings in Theme Customizer
+2. Divi Post Settings in Theme Customizer
+3. Divi Page Settings in Theme Customizer
+4. Divi Project Settings in Theme Customizer
+5. Divi Product Settings in Theme Customizer
+6. Divi Visual Settings
+7. Divi Default edictor Settings
 
 == Changelog ==
+
+= 1.3 =
+
+* Added compatibility with Gutenberg editor.
+* Added Settings compatible with Default and Visual builder.
+* Removed Last Used option from Theme Customizer.
+* Refactored Theme Customizer code.
+* Refactored the way the plugin work with direct update of postmeta.
+* Converted Theme Customizer options in Theme Mods.
+* Added notice for users that update the plugin.
+* Added checkbox in Theme Customizer for dismiss the Meta Box in single posts.
 
 = 1.2 =
 
@@ -80,6 +92,11 @@ Yes, of course. You can always change manually the Divi Settings from inside pos
 * Added option for remembering the last used options.
 
 == Upgrade Notice ==
+
+= 1.3 =
+
+* Added compatibility with Gutenberg editor.
+* Replaced default metabox with Settings in Default and Visual Builder.
 
 = 1.2 =
 

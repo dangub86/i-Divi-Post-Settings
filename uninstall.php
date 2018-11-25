@@ -30,24 +30,35 @@ $option_project_scroll = 'idivi_project_settings_before_scroll';
 $option_project_nav = 'idivi_project_settings_nav';
 $project_options_remember = 'idivi_project_settings_last_used';
 
+//Product Settings
+$option_product_sidebar = 'idivi_product_settings_sidebar';
+$option_product_dot = 'idivi_product_settings_dot';
+$option_product_scroll = 'idivi_product_settings_before_scroll';
+$product_options_remember = 'idivi_product_settings_last_used';
+
 //DELETE PLUGIN OPTIONS
 //Post Settings
-delete_option($option_sidebar);
-delete_option($option_dot);
-delete_option($option_scroll);
-delete_option($option_title);
-delete_option($post_options_remember);
+remove_theme_mod($option_sidebar);
+remove_theme_mod($option_dot);
+remove_theme_mod($option_scroll);
+remove_theme_mod($option_title);
+remove_theme_mod($post_options_remember);
 //Page Settings
-delete_option($option_page_sidebar);
-delete_option($option_page_dot);
-delete_option($option_page_scroll);
-delete_option($page_options_remember);
+remove_theme_mod($option_page_sidebar);
+remove_theme_mod($option_page_dot);
+remove_theme_mod($option_page_scroll);
+remove_theme_mod($page_options_remember);
 //Project Settings
-delete_option($option_project_sidebar);
-delete_option($option_project_dot);
-delete_option($option_project_scroll);
-delete_option($option_project_nav);
-delete_option($project_options_remember);
+remove_theme_mod($option_project_sidebar);
+remove_theme_mod($option_project_dot);
+remove_theme_mod($option_project_scroll);
+remove_theme_mod($option_project_nav);
+remove_theme_mod($project_options_remember);
+//Product Settings
+remove_theme_mod($option_product_sidebar);
+remove_theme_mod($option_product_dot);
+remove_theme_mod($option_product_scroll);
+remove_theme_mod($product_options_remember);
 
 // drop a custom database row.
 global $wpdb;
